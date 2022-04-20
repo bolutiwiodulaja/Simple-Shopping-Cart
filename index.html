@@ -13,8 +13,135 @@
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
-  </head>
-  <body>
+    <script>
 
+      var calculateSubCost = function (ele) {
+
+          var productPrice = parseFloat($(ele).children('.price').text());
+          var productQuantity = parseFloat($(ele).find('.quantity input').val()); 
+          var productSubCost = productPrice  * productQuantity; 
+          $(ele).children('.subCost').html('$'+ productSubCost);
+
+          return productSubCost;
+      }
+      var createSubCost = function (ele) {
+      $('tbody tr').each(function(i, ele){
+          calculateSubCost(ele);
+        });
+      }  
+        var sum = function (acc, x) { return acc + x; };
+        var totalCostUpdate = function() {
+          var productSubCostArr = []; 
+          arrLength = productSubCostArr.length
+          $(document).on('click', '.btn.calculate', function(){
+          $('tbody tr').each(function(i, ele){
+            var subCost = calculateSubCost(ele);
+            productSubCostArr.push(subCost);
+          });
+            var totalCost = productSubCostArr.reduce(sum);
+            $('#total').html(totalCost);
+            productSubCostArr = [];
+          });
+        };
+
+        $(document).ready(function(){
+        createSubCost();  
+        totalCostUpdate();
+
+        $(document).on('click', '.btn.cancel', function(event){
+          $(this).closest('tr').remove();
+          createSubCost();
+        });
+
+        $(document).on('input','tr input', function (){
+          createSubCost();
+        });
+        
+        $('#addProduct').on('submit', function (event) {
+          event.preventDefault();
+          var product = $(this).children('[name=product]').val();
+          var price = $(this).children('[name=price]').val();
+          var quantity = $(this).children('[name=quantity]').val();
+          
+          $('tbody').append('<tr>' + '<td class="product">' + product + '</td>' + '<td class="price calc">' + price + '</td>' + '<td class="quantity calc">QTY<input type="number" value="' + quantity + '" /></td>' + '<td><button class="btn btn-light btn-sm cancel">cancel</button></td>' + '<td class="subCost"></td>' + '</tr>');
+          createSubCost();
+          
+          $(this).children('[name=product]').val('');
+          $(this).children('[name=price]').val('');
+          $(this).children('[name=quantity]').val('');
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Shopping Cart</h1>
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-responsive">
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Price($)</th>
+                <th scope="col">Quantity</th>
+                <th scope="col"></th>
+                <th scope="col">Sub Cost($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="product">Salmon</td>
+                <td class="price calc">60</td>
+                <td class="quantity calc">QTY<input type="number" value="1"/></td>
+                <td><button class="btn btn-light btn-sm cancel">cancel</button></td>
+                <td class="subCost"></td>
+              </tr>
+              <tr>
+                <td class="product">Tuna</td>
+                <td class="price calc">50</td>
+                <td class="quantity calc">QTY<input type="number" value="3"/></td>
+                <td><button class="btn btn-light btn-sm cancel">cancel</button></td>
+                <td class="subCost"></td>
+              </tr>
+              <tr>
+                <td class="product">Carp</td>
+                <td class="price calc">40</td>
+                <td class="quantity calc">QTY<input type="number" value="2"/></td>
+                <td><button class="btn btn-light btn-sm cancel">cancel</button></td>
+                <td class="subCost"></td>
+              </tr>
+              <tr>
+                <td class="product">Pork</td>
+                <td class="price calc">50</td>
+                <td class="quantity calc">QTY<input type="number" value="2"/></td>
+                <td><button class="btn btn-light btn-sm cancel">cancel</button></td>
+                <td class="subCost"></td>
+              </tr>
+              <tr>
+                <td class="product">Beef</td>
+                <td class="price calc">40</td>
+                <td class="quantity calc">QTY<input type="number" value="4"/></td>
+                <td><button class="btn btn-light btn-sm cancel">cancel</button></td>
+                <td class="subCost"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <form class="col-12" id="addProduct">
+          <input class="col-4 mx-2" name="product" type="text" placeholder="Product" required/>
+          <input class="col-3 mx-2" name="price" type="number" placeholder="Price"/>
+          <input class="col-3 mx-2" name="quantity" type="number" placeholder="Quantity"/>
+          <button class="btn btn-primary">Create</button>
+        </form>
+        <div class="col-12 col-md-6 mt-5">
+          <h3>Total Price: $ <span id="total"></span></h3>
+        </div>
+        <div class="col-12 col-md-6 mt-5">
+          <button class="btn btn-light calculate">Calculate</button>
+        </div>
+      </div>
+    </div>
+    
   </body>
 </html>
