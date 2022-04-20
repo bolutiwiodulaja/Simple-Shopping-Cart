@@ -18,7 +18,7 @@
       var calculateSubCost = function (ele) {
 
           var productPrice = parseFloat($(ele).children('.price').text());
-          var productQuantity = parseFloat($(ele).find('.quantity input').val()); 
+          var productQuantity = parseFloat($(ele).find('.quantity input').val()||0); 
           var productSubCost = productPrice  * productQuantity; 
           $(ele).children('.subCost').html('$'+ productSubCost);
 
